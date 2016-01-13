@@ -1,0 +1,17 @@
+#!/bin/bash
+
+USAGE="$(basename "$0") [-h] FILE...
+
+Uses filename to set -AllDates in files
+
+  -h  print this help and exit"
+
+while getopts h OPT ; do
+  case "$OPT" in
+    h) echo "$USAGE"; exit 1 ;;
+  esac
+done
+shift $((OPTIND-1))
+
+exiftool -progress '-AllDates<FileName' "$@"
+

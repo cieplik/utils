@@ -1,0 +1,29 @@
+#!/bin/bash
+
+USAGE="$(basename "$0") [-s DURATION] [-d] [-h] FILE...
+
+  -s  shift the time by DURATION. For example:
+      -s 13         shifts by 13 hours
+      -s -5:5       shifts by -305 minutes
+      -s '1 2:0:3'  shifts by 1 day, 2 hours and 3 seconds
+  -d  dry run
+  -h  print this help and exit"
+
+TIMESHIFT=0
+TARGETTAG=FileName
+
+while getopts s:dh OPT ; do
+  case "$OPT" in
+         s) TIMESHIFT="$OPTARG" ;;
+         d) TARGETTAG=TestName ;;
+    h | \?) echo "$USAGE"; exit 1 ;;
+  esac
+done
+shift $(($OPTIND-1))
+
+exiftool -progress                                                   \
+         -globalTimeShift "$TIMESHIFT"                               \
+         -dateFormat "%Y%m%d-%H%M%S.%%e"                             \
+         "-$TARGETTAG<DateTimeOriginal"                              \
+         "$@"
+
