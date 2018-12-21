@@ -21,9 +21,10 @@ while getopts s:dh OPT ; do
 done
 shift $(($OPTIND-1))
 
-exiftool -progress                                                   \
-         -globalTimeShift "$TIMESHIFT"                               \
-         -dateFormat "%Y%m%d-%H%M%S.%%e"                             \
-         "-$TARGETTAG<DateTimeOriginal"                              \
-         "$@"
-
+for F in "$@"; do
+  exiftool -progress                                                   \
+           -globalTimeShift "$TIMESHIFT"                               \
+           -dateFormat "%Y%m%d-%H%M%S.$(date +%s%N).%%e"               \
+           "-$TARGETTAG<DateTimeOriginal"                              \
+           "$F"
+done
